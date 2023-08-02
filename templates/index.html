@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Interaction</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Chatbot Interaction</h1>
+    <div>
+        <p>Bot: Hello! I'm your friendly chatbot. Type 'exit' to end the conversation.</p>
+    </div>
+    <div>
+        <label for="userInput">You:</label>
+        <input type="text" id="userInput" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <div id="chatContainer"></div>
+
+    <script>
+        function appendMessage(sender, message) {
+            const chatContainer = document.getElementById("chatContainer");
+            const messageElement = document.createElement("div");
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatContainer.appendChild(messageElement);
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById("userInput").value;
+            appendMessage("You", userInput);
+
+            if (userInput.toLowerCase() === "exit") {
+                appendMessage("Bot", "Goodbye!");
+                return;
+            }
+
+            axios.post("/get_response", { userInput })
+                .then(response => {
+                    const botResponse = response.data.response;
+                    appendMessage("Bot", botResponse);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        }
+    </script>
+</body>
+</html>
