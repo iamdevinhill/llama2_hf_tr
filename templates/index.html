@@ -2,14 +2,17 @@
 <html>
 <head>
     <title>Chatbot Interaction</title>
+    <!-- Include the Axios library for making HTTP requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <h1>Chatbot Interaction</h1>
     <div>
+        <!-- Initial bot message -->
         <p>Bot: Hello! I'm your friendly chatbot. Type 'exit' to end the conversation.</p>
     </div>
     <div>
+        <!-- Input field and button for user interaction -->
         <label for="userInput">You:</label>
         <input type="text" id="userInput" />
         <button onclick="sendMessage()">Send</button>
@@ -17,28 +20,39 @@
     <div id="chatContainer"></div>
 
     <script>
+        // Function to append a message to the chat container
         function appendMessage(sender, message) {
             const chatContainer = document.getElementById("chatContainer");
             const messageElement = document.createElement("div");
+            // Display the sender's name and the message
             messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
             chatContainer.appendChild(messageElement);
         }
 
+        // Function to send a user message to the server
         function sendMessage() {
+            // Get user input from the input field
             const userInput = document.getElementById("userInput").value;
+            // Display the user's message in the chat container
             appendMessage("You", userInput);
 
+            // Check if the user wants to exit the conversation
             if (userInput.toLowerCase() === "exit") {
+                // Display a goodbye message from the bot
                 appendMessage("Bot", "Goodbye!");
                 return;
             }
 
+            // Send a POST request to the server to get the bot's response
             axios.post("/get_response", { userInput })
                 .then(response => {
+                    // Get the bot's response from the server's response
                     const botResponse = response.data.response;
+                    // Display the bot's response in the chat container
                     appendMessage("Bot", botResponse);
                 })
                 .catch(error => {
+                    // Display an error message if the request fails
                     console.error("Error:", error);
                 });
         }
